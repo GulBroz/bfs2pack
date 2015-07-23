@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <string.h>
+#include "version.h"
 #include "arg_parser.h"
 #include "pack.h"
 #include "unpack.h"
@@ -9,14 +11,14 @@ using namespace std;
 using namespace bfs;
 
 const char *invocationName = 0;
-const char * const ProgramName = "Karoks bfs2pack";
-const char * const programName = "bfs2pack";
-const char * const programVersion = "1.1 console";
+const char * const ProgramName = PROG_LONGNAME;
+const char * const programName = PROG_NAME;
+const char * const programVersion = PROG_VERSION " console";
 const char * const programDate = __DATE__;
 
 void showHelp( ) throw()
 {
- 	 printf("%s - Flatout2 bfs archive packer/unpacker\n", ProgramName );
+     printf("%s - %s\n", ProgramName, PROG_DESCRIPTION );
  	 printf("Have fun!\n");
  	 printf("\nUsage: %s <a|x|l> [dir] <foobar.bfs> [options]\n", invocationName );
  	 printf("Modes:\n");
@@ -37,11 +39,11 @@ void showHelp( ) throw()
 
 void showVersion() throw ()
 {
- 	 printf("%s version %s\n", ProgramName, programVersion);
+     printf("%s %s\n", ProgramName, programVersion);
  	 printf("Copyright (C) 2006 Paul Fritsche.\n");
  	 printf("Build date: %s\n\n", programDate);
- 	 printf("This program is free software; you may redistribute it under the terms of\n"); 	 
- 	 printf("the GNU General Public License. This program has absolutely no warranty.\n"); 	 
+ 	 printf("This program is free software; you may redistribute it under the terms of\n");
+ 	 printf("the GNU General Public License. This program has absolutely no warranty.\n");
 }
 
 void showError(const char * msg, const int errorcode=0, const bool help=false) throw()
@@ -74,14 +76,14 @@ const char * optname( const int code, const Arg_parser::Option options[] )throw(
        }
      if( code>0 && code<256 ) buf[0] = code; else buf[0]='?';
      return buf;
- 	   
+
 }
 int main(int argc, char *argv[])
 {
     int verbose = 1;
     bool zip = false;
     invocationName = argv[0];
-    
+
     static const Arg_parser::Option options[] =
     {
 	 	   {'V', "version",			Arg_parser::no },
@@ -134,7 +136,7 @@ int main(int argc, char *argv[])
 		  	 unpack.close();
 		  	 // error
 		 } else{
-		 
+
 			 unpack.readFilenames();
 			 if( action=='x' ){
 			 	 for( int i=0;i<unpack.getNumberOfFiles();i++ )
@@ -157,11 +159,11 @@ int main(int argc, char *argv[])
 						 }
 						 cout<<endl;
 					 }
-		  	 		 
+
 			     }
 	         }
-		 }		
-	 	
+		 }
+
 	} else if( optNames.size()==2 && action=='a')
 	{
 	   // PACK
@@ -169,7 +171,7 @@ int main(int argc, char *argv[])
  	   	 optNames.pop_front();
 	     string FILE = optNames.front();
  	   	 optNames.pop_front();
-	     
+
 	     Pack pack( DIR, FILE );
 	     action = packing;
 	     pack.readDir();
@@ -186,6 +188,6 @@ int main(int argc, char *argv[])
 	 	showError("You must specify either one bfs archive or a directory and a bfs.",0,true);
 	 	return 1;
 	}
-    
+
     return EXIT_SUCCESS;
 }

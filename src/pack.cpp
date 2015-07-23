@@ -43,8 +43,8 @@ Pack::Pack(string dir, string filename)
     mEntries = NULL;
     mFileEntries = NULL;
     memset( &mHeader, 0, sizeof( mHeader ) );
-    mFileIt = 0;
-    
+    //mFileIt = 0;
+
     buf = new char[BUFSIZE];
     def = new char[BUFSIZE];
     mHuffman = new Huffman();
@@ -52,10 +52,10 @@ Pack::Pack(string dir, string filename)
 
 Pack::~Pack()
 {
-    close(); 
-    
+    close();
+
     delete buf;
-    delete def;    
+    delete def;
     delete mHuffman;
 }
 
@@ -63,7 +63,7 @@ void Pack::close()
 {
  	mFilesToPack.clear();
     mHuffman->reset();
- 	if( mOutput.is_open() ) mOutput.close(); 
+ 	if( mOutput.is_open() ) mOutput.close();
     if( mEntries ) delete[] mEntries;
     if( mFileEntries ) delete[] mFileEntries;
 }
@@ -78,7 +78,7 @@ int Pack::packFile( bool zip, int verbose )
 {
  	z_stream strm;
  	unsigned int chk;
- 	
+
  	ifstream in;
  	in.open( mFileIt->c_str(), ios::binary );
  	in.seekg( 0, ios::end );
@@ -104,10 +104,10 @@ int Pack::packFile( bool zip, int verbose )
 	 		cout<<"deflating ";
 	    else
     	cout<<"copying ";
-    	
+
    	int bytesToRead = length;
    	int fepos = mOutput.tellp();
-   	
+
    	if( zip )
    	{
 	 	strm.zalloc 		= Z_NULL;
@@ -120,7 +120,7 @@ int Pack::packFile( bool zip, int verbose )
 	chk = crc32( 0, Z_NULL, 0 );
 	int steps = length/BUFSIZE;
 	int step = 0;
-	
+
 	while( bytesToRead>0 )
 	{
         if( step==0 )
@@ -138,13 +138,13 @@ int Pack::packFile( bool zip, int verbose )
 		} else
 		{
 		  	toread = bytesToRead;
-			flush = Z_FINISH;  	 	
+			flush = Z_FINISH;
 		}
 		setPgrBlock( length-bytesToRead );
-		
+
 		in.read( buf, toread );
 		chk = crc32( chk, (Bytef*) buf, toread );
-		
+
 		if( zip )
 		{
 		 	strm.avail_in = toread;
@@ -165,7 +165,7 @@ int Pack::packFile( bool zip, int verbose )
 		bytesToRead -= toread;
 	}
 	in.close();
-	
+
  	if( verbose )
 		if( length>0 )
  			cout<<"done ("<<100*psize/length<<"%)";
@@ -173,12 +173,12 @@ int Pack::packFile( bool zip, int verbose )
    	        cout<<"done (-)";
 
     if( verbose>1 )
-		cout<<" read: "<<length<<" wrote: "<<psize; 
+		cout<<" read: "<<length<<" wrote: "<<psize;
  	if( verbose )
-        cout<<endl; 
+        cout<<endl;
 	if( zip )
 	  	deflateEnd( &strm );
-  	
+
   	pos = mPos;
   	int fei = getFilenameIndex( dir+"/"+file );
   	LOG(fei);
@@ -190,7 +190,7 @@ int Pack::packFile( bool zip, int verbose )
 	  	mEntries[fei*2+1]++;
 	}
 	mLastFei = fei;
-	
+
 	mFileEntries[pos].offset = fepos;
 	mFileEntries[pos].packed = psize;
 	mFileEntries[pos].unpacked = length;
@@ -198,7 +198,7 @@ int Pack::packFile( bool zip, int verbose )
 	mFileEntries[pos].dir = mFilenamePositions[dir];
 	mFileEntries[pos].file = mFilenamePositions[ file ];
 	mFileEntries[pos].unknown = ~chk;
-	
+
 	mPos++;
 	if( hasNextFile() )
 		mFileIt++;
@@ -217,7 +217,7 @@ void Pack::finalize()
 
 bool Pack::open()
 {
- 	mOutput.open( mFilename.c_str(), ofstream::binary | ofstream::trunc ); 
+ 	mOutput.open( mFilename.c_str(), ofstream::binary | ofstream::trunc );
 }
 
 void Pack::writeHeader()
@@ -227,7 +227,7 @@ void Pack::writeHeader()
  	mHeader.entries = 997;
  	mHeader.data_offset = 0;
  	mHeader.unknown = 0;
- 	
+
  	mOutput.write( (char*) &mHeader, sizeof( mHeader ) );
  	mEntries = new int[mHeader.entries*2];
  	memset( mEntries, 0, mHeader.entries * 2 * 4 );
@@ -237,7 +237,7 @@ void Pack::writeHeader()
 
 void Pack::writeFilenames()
 {
- 	mHuffman->finalize(); 
+ 	mHuffman->finalize();
  	short buf[500];
  	int treeSize = mHuffman->serialize(buf);
  	char crypted[500000], *c = crypted;
@@ -257,7 +257,7 @@ void Pack::writeFilenames()
 	   c+=cs;
 	   offsets[i+1] = offsets[i]+cs;
 	}
-	
+
 	FilenameHeader fnHead;
 	fnHead.offset_table = sizeof( fnHead );
 	fnHead.offset_size = fnHead.offset_table + nofn * 4 ;
@@ -269,22 +269,22 @@ void Pack::writeFilenames()
 	mOutput.write( (char*)sizes, nofn*2 );
 	mOutput.write( (char*)buf, treeSize*2 );
 	mOutput.write( crypted, c-crypted );
-	
+
 	mFileEntries = new FileEntry[mHeader.no_of_files];
 	mFileEntriesPos = mOutput.tellp();
 	mOutput.write( (char*)mFileEntries, sizeof( FileEntry ) * mHeader.no_of_files );
-	
+
 	mHeader.data_offset = mOutput.tellp();
 }
 
 char counter = 0;
 void Pack::readDir()
 {
- 	counter=0; 
+ 	counter=0;
 	setPgrNewArchive( 1 );
     setPgrNewFile("reading tree", 0, 255 );
     listDir( mDir );
-    
+
     mFilesToPack.sort( this->sortByHash );
     mFileIt = mFilesToPack.begin();
     mPos = 0;
@@ -297,7 +297,7 @@ bool Pack::sortByHash(const string &a, const string &b )
  	 string fb = fixDataPath( b );
  	 int feia = getFilenameIndex(fa);
  	 int feib = getFilenameIndex(fb);
- 	 if( feia==feib ) 
+ 	 if( feia==feib )
  	 {
 	  	 return fa<fb;
      }
@@ -313,7 +313,7 @@ string Pack::fixDataPath( string path )
     }
     return path;
 }
-	   
+
 void Pack::listDir( string path )
 {
     setPgrBlock( counter++ );
@@ -342,9 +342,9 @@ void Pack::listDir( string path )
            }
        }
        done = _findnext( handle, &ffblk );
-    } 
+    }
 }
 
 
-	   
+
 };

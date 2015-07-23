@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
 #include "resources.h"
+#include "version.h"
 
 IDB_BM01              BITMAP    "res/001.bmp"
 IDB_BM02              BITMAP    "res/002.bmp"
@@ -49,11 +50,11 @@ END
 
 IDD_ABOUT DIALOGEX 0, 0, 255, 223
 STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About bfs2pack release 1.0"
+CAPTION "About " PROG_NAME " " PROG_VERSION
 FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
     GROUPBOX        "",IDC_STATIC,7,5,241,179
-    CTEXT           "A packer/unpacker for Flatout2 BFS archives",IDC_STATIC,58, 10,138,8
+    CTEXT           PROG_DESCRIPTION,IDC_STATIC,58, 10,150,8
     CTEXT           "Copyright 2006 Paul Fritsche <paul.fritsche@gmx.net>",
                   IDC_STATIC,13,18,228,8
     CTEXT           "GFX by jelbo",

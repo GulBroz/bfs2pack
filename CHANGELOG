@@ -1,0 +1,59 @@
+2015-07-24:
+===========
+- add cmake support / drop Dev-C++ IDE support
+- extract changelog from readme
+- fix compilation
+
+2015-02-10:
+===========
+- moved to github on request
+
+2006-09-08:
+===========
+- added console application
+
+2006-09-01:
+===========
+- http://sourceforge.net/projects/bfs2pack
+- small fixes
+
+2006-08-31:
+===========
+- included gfx by jelbo (www.flatoutjoint.com)
+- bugfixes
+
+2006-08-21:
+===========
+- new gui, with drag and drop support
+- packing original fo2a-data dir into a new bfs archive using the secure mode, creates a compatible archive!
+
+2006-08-19:
+===========
+- finally found the correct filename hashing algorithm (thx Pavcules)
+- now packing files with new filenames WORKS
+
+2006-08-16:
+===========
+- fixed some serious bugs (0 byte files and several problems with encrypting filenames)
+- extracted filename list to lua script (look at filenames.lua)
+- included two mods (fullroam and instantaction) to show usage and to prove functionality
+
+2006-07-18:
+===========
+- some fixes
+
+2006-07-17:
+===========
+- 3rd release
+- unpacking checks checksum (crc32)
+- packing, first test ;-)
+
+2006-07-13:
+===========
+- 2nd public release, now its c++
+
+2006-07-11:
+===========
+- 1. public release
+
+

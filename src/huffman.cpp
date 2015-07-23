@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "mmgr.h"
 #endif
 
+#include <strings.h>
+
 #include "huffman.h"
 #include "log.h"
 
@@ -122,7 +124,7 @@ int Huffman::encryptString(string str, char *buf)
 				{
 				    currbit++;
 				    LOG(" ");
-				}	
+				}
          }
     }
     return bytes+1;
@@ -169,7 +171,7 @@ void Huffman::finalize()
 		  }
      }
  	 // alloc memory
- 	 mNoNodes = mNoNodes * 2 - 1; 
+ 	 mNoNodes = mNoNodes * 2 - 1;
  	 mTree = new HuffmanTree[ mNoNodes ];
  	 memset( mTree, -1, sizeof( HuffmanTree ) * mNoNodes );
  	 int pos = 0;
@@ -185,7 +187,7 @@ void Huffman::finalize()
 		   	  pos++;
 		  }
      }
-     
+
  	 mRoot = NULL;
  	 // build tree, taking the two smallest nodes and connect them
  	 HuffmanTree *one, *two;
@@ -268,10 +270,10 @@ void Huffman::buildDictRec( HuffmanTree *node, int key )
 void Huffman::countTreeRec( HuffmanTree *node, int base )
 {
  	 node->number = base;
- 	 
+
  	 int left = countNodesRec( node->left );
  	 int right = countNodesRec( node->right );
- 	 
+
  	 if( left>1 )
  	 {
 	  	 int left_right = countNodesRec( node->left->right );

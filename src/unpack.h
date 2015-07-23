@@ -50,7 +50,7 @@ public:
 	   bool readHeader();
 	   void readFilenames();
 	   
-	   int unpackFile( int no, int verbose );
+       int unpackFile( int no, int verbose=0 );
 	  
 	   string *getFilenames(){ return mFilenames; }
 	   int getNumberOfFiles() { return mHeader.no_of_files; }

@@ -52,7 +52,7 @@ public:
 	   void writeHeader();
 	   void writeFilenames();
 	   void finalize();
-	   int packFile( bool zip, int verbose );
+       int packFile( bool zip, int verbose=0 );
 	   
        bool hasNextFile();
 	   int getNumberOfFiles() { return mHeader.no_of_files; }
